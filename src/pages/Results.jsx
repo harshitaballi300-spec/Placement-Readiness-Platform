@@ -90,7 +90,10 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
                     <button onClick={() => navigate('/assessments')} className="flex items-center text-gray-500 hover:text-gray-900 mb-4 transition-colors cursor-pointer">
                         <ArrowLeft className="w-4 h-4 mr-1" /> Back to Analyzer
                     </button>
-                    <h1 className="text-3xl font-bold text-gray-900">{data.role} Analysis</h1>
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl font-bold text-gray-900">{data.role} Analysis</h1>
+                        <span className="text-[10px] uppercase font-bold tracking-widest bg-gray-100 text-gray-400 px-2 py-0.5 rounded">Demo Mode</span>
+                    </div>
                     <p className="text-gray-500 mt-1">{data.company} • Computed Readiness: <span className="font-bold text-indigo-600 transition-all duration-300">{data.readinessScore}/100</span></p>
                 </div>
 
@@ -106,8 +109,35 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
-                {/* Left Column: Skills & Plan */}
+                {/* Left Column: Intel & Skills */}
                 <div className="lg:col-span-1 space-y-6">
+                    {data.companyIntel && (
+                        <Card className="border-indigo-100 bg-indigo-50/30">
+                            <CardHeader>
+                                <CardTitle className="text-lg flex items-center text-indigo-900 leading-tight">
+                                    <Building className="w-5 h-5 mr-2" /> Company Intel
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Industry</p>
+                                        <p className="text-sm font-bold text-gray-700">{data.companyIntel.industry}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Est. Size</p>
+                                        <p className="text-sm font-bold text-gray-700">{data.companyIntel.size}</p>
+                                    </div>
+                                </div>
+                                <div className="pt-2 border-t border-indigo-100">
+                                    <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-1">Typical Hiring Focus</p>
+                                    <p className="text-sm font-medium text-indigo-800">{data.companyIntel.focus}</p>
+                                </div>
+                                <p className="text-[9px] text-gray-400 italic">Heuristic generation based on organizational patterns.</p>
+                            </CardContent>
+                        </Card>
+                    )}
+
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-lg flex items-center"><Target className="w-5 h-5 mr-2 text-indigo-600" /> Skill Assessment</CardTitle>
@@ -125,8 +155,8 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
                                                     key={s}
                                                     onClick={() => handleToggleSkill(s)}
                                                     className={`group relative flex items-center px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${isKnow
-                                                            ? 'bg-green-50 text-green-700 border-green-200 shadow-sm'
-                                                            : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-300'
+                                                        ? 'bg-green-50 text-green-700 border-green-200 shadow-sm'
+                                                        : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-300'
                                                         }`}
                                                 >
                                                     {isKnow ? <CheckCircle className="w-3 h-3 mr-1.5" /> : <Circle className="w-3 h-3 mr-1.5 text-gray-300 group-hover:text-indigo-400" />}
@@ -164,8 +194,32 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
                     </Card>
                 </div>
 
-                {/* Right Column: Checklist & Questions */}
+                {/* Right Column: Timeline & Checklist & Questions */}
                 <div className="lg:col-span-2 space-y-6">
+                    {data.roundMapping && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-lg flex items-center"><ListChecks className="w-5 h-5 mr-2 text-indigo-600" /> Interview Round Mapping</CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-0">
+                                <div className="relative pl-8 space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-indigo-100">
+                                    {data.roundMapping.map((r, i) => (
+                                        <div key={i} className="relative">
+                                            <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-white border-4 border-indigo-600 z-10"></div>
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <h4 className="font-bold text-gray-900 leading-none">{r.round}</h4>
+                                                    <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-full border border-indigo-100 uppercase">{r.topic}</span>
+                                                </div>
+                                                <p className="text-xs text-gray-500 font-medium">{r.why}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0">
                             <CardTitle className="text-lg flex items-center"><ListChecks className="w-5 h-5 mr-2 text-indigo-600" /> Prep Checklist</CardTitle>

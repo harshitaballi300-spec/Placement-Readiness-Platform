@@ -189,6 +189,39 @@ export function analyzeJD(company, role, jdText) {
         i++;
     }
 
+    // --- Company Intel & Round Mapping ---
+    const enterprises = ["google", "amazon", "microsoft", "meta", "apple", "netflix", "tcs", "infosys", "wipro", "accenture", "cognizant", "ibm", "oracle", "salesforce", "adobe", "samsung", "walmart"];
+    const lowerCompany = (company || "").toLowerCase();
+
+    let companySize = "Startup (<200)";
+    let hiringFocus = "Practical problem solving + stack depth";
+    let isEnterprise = false;
+
+    if (enterprises.some(e => lowerCompany.includes(e))) {
+        companySize = "Enterprise (2000+)";
+        hiringFocus = "Structured DSA + core fundamentals";
+        isEnterprise = true;
+    } else if (jdText && jdText.length > 1500) {
+        companySize = "Mid-size (200–2000)";
+        hiringFocus = "Balance of fundamentals and specializations";
+    }
+
+    const industry = (jdText || "").toLowerCase().includes("bank") || (jdText || "").toLowerCase().includes("fin")
+        ? "Finance / Fintech"
+        : "Technology Services";
+
+    const roundMapping = [];
+    if (isEnterprise) {
+        roundMapping.push({ round: "Round 1: Online Assessment", topic: "DSA + Aptitude", why: "Used to filter thousands of applications at scale." });
+        roundMapping.push({ round: "Round 2: Technical Interview I", topic: "DSA + Algorithms", why: "Tests your ability to solve complex problems with code." });
+        roundMapping.push({ round: "Round 3: Technical Interview II", topic: "Core CS + Projects", why: "Ensures solid theoretical foundation in OS, DBMS, etc." });
+        roundMapping.push({ round: "Round 4: Managerial / HR", topic: "Culture & Behavioral", why: "Evaluates teamwork, ethics, and long-term stability." });
+    } else {
+        roundMapping.push({ round: "Round 1: Practical Screen", topic: "Machine Coding / Task", why: "Verification that you can build features immediately." });
+        roundMapping.push({ round: "Round 2: Technical Discussion", topic: "Stack Depth + System", why: "Deep dive into your architectural understanding." });
+        roundMapping.push({ round: "Round 3: Culture Fit", topic: "Founder / Team Round", why: "Small teams need perfect interpersonal alignment." });
+    }
+
     return {
         id: Date.now().toString(),
         createdAt: new Date().toISOString(),
@@ -196,12 +229,18 @@ export function analyzeJD(company, role, jdText) {
         role: role || "Unknown Role",
         jdText,
         extractedSkills,
-        skillConfidenceMap: {}, // Initialize empty
+        skillConfidenceMap: {},
+        companyIntel: {
+            size: companySize,
+            industry,
+            focus: hiringFocus,
+        },
+        roundMapping,
         plan,
         checklist,
         questions,
         readinessScore,
-        originalReadinessScore: readinessScore // Store base score
+        originalReadinessScore: readinessScore
     };
 }
 
