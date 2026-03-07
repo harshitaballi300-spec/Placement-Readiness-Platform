@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodNest Premium Build System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <div class="project-name">KodNest Premium Build System</div>
+        <div class="progress-indicator">Step 1 / 5</div>
+        <div class="status-badge in-progress">In Progress</div>
+    </header>
+
+    <main class="main-content container">
+        <!-- Context Header -->
+        <section class="context-header">
+            <h1>Design System Foundation</h1>
+            <p class="subtext">Establish the core visual language, layout constraints, and logic proofing mechanism.</p>
+        </section>
+
+        <!-- Workspace Grid -->
+        <div class="workspace-grid">
+            <!-- Primary Workspace -->
+            <div class="primary-workspace">
+                <div class="card">
+                    <h2>Component Preview</h2>
+                    <p>This workspace is where core interactions occur. Adhere to strict constraints: no drop shadows, predictable padding, and calm states.</p>
+                    
+                    <div style="margin-top: var(--space-24);">
+                        <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: var(--space-8);">System Token Name</label>
+                        <input type="text" placeholder="e.g. primary-button">
+                    </div>
+                    
+                    <div class="btn-group" style="margin-top: var(--space-24);">
+                        <button class="btn btn-primary">Primary Action</button>
+                        <button class="btn btn-secondary">Secondary Action</button>
+                    </div>
+                </div>
+
+                <div class="card empty-state">
+                    <h3>Awaiting Construction</h3>
+                    <p>Provide the next set of instructions to generate structure. Do not remain idle.</p>
+                    <button class="btn btn-secondary" style="margin-top: var(--space-16);">Initialize Component</button>
+                </div>
+
+                <div class="error-state">
+                    <div class="error-title">Validation Error</div>
+                    <p>The provided proof URL is inaccessible. Ensure the repository permissions are set and the asset is visible, then retry.</p>
+                </div>
+            </div>
+
+            <!-- Secondary Panel -->
+            <div class="secondary-panel">
+                <div class="panel-section">
+                    <div class="panel-title">Step Explanation</div>
+                    <p style="font-size: 14px; color: #333;">Initialize the workspace following strict coherent spacing (8, 16, 24, 40, 64) and typography rules.</p>
+                </div>
+                
+                <div class="panel-section" style="margin-top: var(--space-24);">
+                    <div class="panel-title">Generation Prompt</div>
+                    <div class="prompt-box">Apply typography constraints. Headings must be Serif and large. Body text max width 720px. Use accent color only for primary CTAs.</div>
+                </div>
+                
+                <div class="btn-group panel-actions" style="margin-top: var(--space-24);">
+                    <button class="btn btn-secondary">Copy</button>
+                    <button class="btn btn-secondary">Build in Lovable</button>
+                    <button class="btn btn-secondary" style="color: var(--success-color); border-color: var(--success-color);">It Worked</button>
+                    <button class="btn btn-secondary" style="color: var(--accent-color); border-color: var(--accent-color);">Error</button>
+                    <button class="btn btn-secondary">Add Screenshot</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Proof Footer -->
+    <footer class="proof-footer">
+        <div class="container">
+            <div class="checklist">
+                <div class="check-item-group">
+                    <div class="check-item">
+                        <input type="checkbox" id="proof-ui">
+                        <label for="proof-ui">UI Built</label>
+                    </div>
+                    <input type="text" class="proof-input" placeholder="Paste UI preview link...">
+                </div>
+                
+                <div class="check-item-group">
+                    <div class="check-item">
+                        <input type="checkbox" id="proof-logic">
+                        <label for="proof-logic">Logic Working</label>
+                    </div>
+                    <input type="text" class="proof-input" placeholder="Explain logic check...">
+                </div>
+
+                <div class="check-item-group">
+                    <div class="check-item">
+                        <input type="checkbox" id="proof-test">
+                        <label for="proof-test">Test Passed</label>
+                    </div>
+                    <input type="text" class="proof-input" placeholder="Link to test run...">
+                </div>
+
+                <div class="check-item-group">
+                    <div class="check-item">
+                        <input type="checkbox" id="proof-deploy">
+                        <label for="proof-deploy">Deployed</label>
+                    </div>
+                    <input type="text" class="proof-input" placeholder="Live environment URL...">
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Placement Readiness Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Additional Layout for Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-24);
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-value {
+            font-family: var(--font-heading);
+            font-size: 36px;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #555;
+            font-weight: 600;
+        }
+
+        /* List Items */
+        .list-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-16);
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: var(--space-16);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .list-item:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .list-item-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .list-item-meta {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="project-name">KodNest Premium Build System</div>
+            <div class="progress-indicator">Placement Readiness</div>
+            <div class="status-badge shipped" style="color: var(--success-color); border-color: var(--success-color);">
+                Active</div>
+        </header>
+
+        <main class="main-content container">
+            <!-- Context Header -->
+            <section class="context-header">
+                <h1>Candidate Dashboard</h1>
+                <p class="subtext">Review your current readiness score, upcoming assessments, and recommended actions.
+                </p>
+            </section>
+
+            <!-- Workspace Grid -->
+            <div class="workspace-grid">
+                <!-- Primary Workspace -->
+                <div class="primary-workspace">
+                    <div class="dashboard-grid">
+                        <!-- Stat Card 1 -->
+                        <div class="card stat-card">
+                            <div>
+                                <div class="stat-label">Overall Readiness</div>
+                                <div class="stat-value">84%</div>
+                            </div>
+                            <div class="status-badge in-progress">On Track</div>
+                        </div>
+
+                        <!-- Stat Card 2 -->
+                        <div class="card stat-card">
+                            <div>
+                                <div class="stat-label">Mock Interviews</div>
+                                <div class="stat-value">3 / 5</div>
+                            </div>
+                            <div class="status-badge" style="color: #666; border-color: #ccc;">Pending</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Action Plan</h2>
+                        <p>Complete the following fundamental steps to secure your readiness verification.</p>
+
+                        <div class="list-group" style="margin-top: var(--space-24);">
+                            <div class="list-item">
+                                <div>
+                                    <div class="list-item-title">Data Structures Assessment</div>
+                                    <div class="list-item-meta">Due in 2 days &bull; 45 mins</div>
+                                </div>
+                                <button class="btn btn-primary">Start</button>
+                            </div>
+                            <div class="list-item">
+                                <div>
+                                    <div class="list-item-title">System Design Fundamentals</div>
+                                    <div class="list-item-meta">Due in 5 days &bull; 90 mins</div>
+                                </div>
+                                <button class="btn btn-secondary">Review</button>
+                            </div>
+                            <div class="list-item">
+                                <div>
+                                    <div class="list-item-title">Behavioral Mock Interview</div>
+                                    <div class="list-item-meta">Completed yesterday</div>
+                                </div>
+                                <button class="btn btn-secondary" disabled
+                                    style="opacity: 0.5; border-color: #ccc; color: #666; cursor: not-allowed;">View
+                                    Feedback</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary Panel -->
+                <div class="secondary-panel">
+                    <div class="card" style="margin-bottom: 0;">
+                        <h3 style="margin-bottom: var(--space-24);">Profile Strength</h3>
+
+                        <div class="panel-section">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-8);">
+                                <span class="panel-title" style="margin-bottom: 0;">Resume Score</span>
+                                <span style="font-weight: 500;">92/100</span>
+                            </div>
+                            <div style="height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden;">
+                                <div style="height: 100%; width: 92%; background: var(--success-color);"></div>
+                            </div>
+                        </div>
+
+                        <div class="panel-section">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-8);">
+                                <span class="panel-title" style="margin-bottom: 0;">Technical Skills</span>
+                                <span style="font-weight: 500;">78/100</span>
+                            </div>
+                            <div style="height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden;">
+                                <div style="height: 100%; width: 78%; background: var(--warning-color);"></div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: var(--space-16);">Update
+                            Profile</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Proof Footer -->
+        <footer class="proof-footer">
+            <div class="container">
+                <div class="checklist">
+                    <div class="check-item-group">
+                        <div class="check-item">
+                            <input type="checkbox" id="proof-ui" checked disabled>
+                            <label for="proof-ui">UI Built</label>
+                        </div>
+                        <input type="text" class="proof-input" value="dashboard.html preview approved" disabled
+                            style="background-color: var(--bg-color);">
+                    </div>
+
+                    <div class="check-item-group">
+                        <div class="check-item">
+                            <input type="checkbox" id="proof-logic">
+                            <label for="proof-logic">Logic Working</label>
+                        </div>
+                        <input type="text" class="proof-input" placeholder="Explain logic check...">
+                    </div>
+
+                    <div class="check-item-group">
+                        <div class="check-item">
+                            <input type="checkbox" id="proof-test">
+                            <label for="proof-test">Test Passed</label>
+                        </div>
+                        <input type="text" class="proof-input" placeholder="Link to test run...">
+                    </div>
+
+                    <div class="check-item-group">
+                        <div class="check-item">
+                            <input type="checkbox" id="proof-deploy">
+                            <label for="proof-deploy">Deployed</label>
+                        </div>
+                        <input type="text" class="proof-input" placeholder="Live environment URL...">
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+</body>
+
+</html>
