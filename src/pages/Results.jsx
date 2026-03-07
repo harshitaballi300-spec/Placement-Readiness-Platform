@@ -23,14 +23,15 @@ export default function Results() {
     if (!data) return <div className="p-8 text-gray-600 font-medium">Loading analysis...</div>;
 
     const handleToggleSkill = (skill) => {
-        const currentStatus = data.skillConfidenceMap[skill] || 'practice';
+        const currentMap = data.skillConfidenceMap || {};
+        const currentStatus = currentMap[skill] || 'practice';
         const newStatus = currentStatus === 'know' ? 'practice' : 'know';
 
         // Calculate new live score
         let scoreDelta = 0;
-        const allSkills = Object.values(data.extractedSkills).flat();
+        const allSkills = Object.values(data.extractedSkills || {}).flat();
 
-        const updatedMap = { ...data.skillConfidenceMap, [skill]: newStatus };
+        const updatedMap = { ...currentMap, [skill]: newStatus };
 
         allSkills.forEach(s => {
             const status = updatedMap[s] || 'practice';
@@ -79,8 +80,10 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
         element.click();
     };
 
-    const weakSkills = Object.values(data.extractedSkills).flat()
-        .filter(s => (data.skillConfidenceMap[s] || 'practice') === 'practice')
+    const extractedSkills = data.extractedSkills || {};
+    const confidenceMap = data.skillConfidenceMap || {};
+    const weakSkills = Object.values(extractedSkills).flat()
+        .filter(s => (confidenceMap[s] || 'practice') === 'practice')
         .slice(0, 3);
 
     return (
@@ -144,12 +147,12 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <p className="text-xs text-gray-500 italic mb-2">Toggle skills you've mastered to update your live readiness score.</p>
-                            {Object.entries(data.extractedSkills).map(([cat, skills]) => (
+                            {Object.entries(data.extractedSkills || {}).map(([cat, skills]) => (
                                 <div key={cat} className="space-y-2">
                                     <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">{cat}</h4>
                                     <div className="flex flex-wrap gap-2">
                                         {skills.map(s => {
-                                            const isKnow = data.skillConfidenceMap[s] === 'know';
+                                            const isKnow = (data.skillConfidenceMap || {})[s] === 'know';
                                             return (
                                                 <button
                                                     key={s}
