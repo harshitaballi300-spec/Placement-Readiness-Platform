@@ -196,10 +196,12 @@ export function analyzeJD(company, role, jdText) {
         role: role || "Unknown Role",
         jdText,
         extractedSkills,
+        skillConfidenceMap: {}, // Initialize empty
         plan,
         checklist,
         questions,
-        readinessScore
+        readinessScore,
+        originalReadinessScore: readinessScore // Store base score
     };
 }
 
@@ -207,6 +209,15 @@ export function saveHistory(entry) {
     const existing = JSON.parse(localStorage.getItem("jd_history") || "[]");
     existing.unshift(entry);
     localStorage.setItem("jd_history", JSON.stringify(existing));
+}
+
+export function updateHistoryEntry(updatedEntry) {
+    const existing = JSON.parse(localStorage.getItem("jd_history") || "[]");
+    const index = existing.findIndex(e => e.id === updatedEntry.id);
+    if (index !== -1) {
+        existing[index] = updatedEntry;
+        localStorage.setItem("jd_history", JSON.stringify(existing));
+    }
 }
 
 export function getHistory() {
