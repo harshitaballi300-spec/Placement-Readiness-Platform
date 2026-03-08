@@ -160,7 +160,7 @@ ${(data.questions || []).map((q, i) => `${i + 1}. ${q}`).join('\n')}
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card id="roadmap" className="scroll-mt-6">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 text-gray-900">
                             <CardTitle className="text-lg flex items-center"><Calendar className="w-5 h-5 mr-2 text-indigo-600" /> 7-Day Roadmap</CardTitle>
                             <button
@@ -286,10 +286,13 @@ ${(data.questions || []).map((q, i) => `${i + 1}. ${q}`).join('\n')}
                             </div>
                         </div>
                         <button
-                            onClick={() => copyToClipboard(plan.length > 0 ? (plan[0].focus || plan[0].task) : "", 'next')}
-                            className="bg-primary hover:bg-primary-hover text-white px-8 py-5 rounded-2xl font-bold flex items-center group transition-all hover:scale-105 shadow-xl cursor-pointer flex-shrink-0"
+                            onClick={() => {
+                                document.getElementById('roadmap')?.scrollIntoView({ behavior: 'smooth' });
+                                copyToClipboard(plan.length > 0 ? (plan[0].focus || plan[0].task) : "", 'next');
+                            }}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-5 rounded-2xl font-bold flex items-center group transition-all hover:scale-105 shadow-xl cursor-pointer flex-shrink-0"
                         >
-                            Start Preparation <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                            {copied === 'next' ? <><CheckCircle2 className="w-5 h-5 mr-2" /> Ready to Start!</> : <><ArrowRight className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" /> Start Preparation</>}
                         </button>
                     </div>
                 </div>
