@@ -7,6 +7,8 @@ import Assessments from './pages/Assessments';
 import Results from './pages/Results';
 import Resources from './pages/Resources';
 import Profile from './pages/Profile';
+import TestChecklist from './pages/TestChecklist';
+import ShipLock from './pages/ShipLock';
 
 function App() {
     return (
@@ -20,6 +22,8 @@ function App() {
                     <Route path="/results/:id" element={<Results />} />
                     <Route path="/resources" element={<Resources />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/prp/07-test" element={<TestChecklist />} />
+                    <Route path="/prp/08-ship" element={<ShipLock />} />
                 </Route>
             </Routes>
         </BrowserRouter>
