@@ -52,34 +52,50 @@ const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 export function analyzeJD(company, role, jdText) {
     const text = (jdText || "").toLowerCase();
 
-    const extractedSkills = {};
-    Object.keys(CATEGORIES).forEach(category => {
+    const skillMap = {
+        coreCS: "Core CS",
+        languages: "Languages",
+        web: "Web",
+        data: "Data",
+        cloud: "Cloud/DevOps",
+        testing: "Testing"
+    };
+
+    const extractedSkills = {
+        coreCS: [],
+        languages: [],
+        web: [],
+        data: [],
+        cloud: [],
+        testing: [],
+        other: []
+    };
+
+    Object.keys(skillMap).forEach(key => {
+        const category = skillMap[key];
         const found = CATEGORIES[category].filter(kw => {
             const escaped = escapeRegExp(kw.toLowerCase());
             const regex = new RegExp(`(^|[^a-z0-9_])${escaped}([^a-z0-9_]|$)`, 'i');
             return regex.test(text);
         });
-        if (found.length > 0) {
-            extractedSkills[category] = found;
-        }
+        extractedSkills[key] = found;
     });
-
-    const categoriesPresent = Object.keys(extractedSkills).length;
-
-    let readinessScore = 35;
-    readinessScore += Math.min(30, categoriesPresent * 5);
-    if (company && company.trim().length > 0) readinessScore += 10;
-    if (role && role.trim().length > 0) readinessScore += 10;
-    if (jdText && jdText.trim().length > 800) readinessScore += 10;
-    if (readinessScore > 100) readinessScore = 100;
 
     const allDetected = Object.values(extractedSkills).flat();
     const hasSkills = allDetected.length > 0;
+
     if (!hasSkills) {
-        extractedSkills["General"] = ["General fresher stack"];
+        extractedSkills.other = ["Communication", "Problem solving", "Basic coding", "Projects"];
     }
 
-    // Generate 5-8 round items based on skills
+    let baseScore = 35;
+    const categoriesPresent = Object.values(extractedSkills).filter(arr => arr.length > 0).length;
+    baseScore += Math.min(30, categoriesPresent * 5);
+    if (company && company.trim().length > 0) baseScore += 10;
+    if (role && role.trim().length > 0) baseScore += 10;
+    if (jdText && jdText.trim().length > 800) baseScore += 10;
+    if (baseScore > 100) baseScore = 100;
+
     const round1 = [
         "Revise quantitative aptitude and logical reasoning",
         "Practice speed-math and data interpretation",
@@ -110,66 +126,66 @@ export function analyzeJD(company, role, jdText) {
         "Practice elevator pitch/introduction"
     ];
 
-    if (extractedSkills["Languages"]) {
-        round1.push(`Review core syntax and memory management for ${extractedSkills["Languages"][0].toUpperCase()}`);
-        round2.push(`Practice standard libraries and collections in ${extractedSkills["Languages"][0].toUpperCase()}`);
+    if (extractedSkills.languages.length > 0) {
+        round1.push(`Review core syntax and memory management for ${extractedSkills.languages[0].toUpperCase()}`);
+        round2.push(`Practice standard libraries and collections in ${extractedSkills.languages[0].toUpperCase()}`);
     } else {
         round1.push("Review OOP concepts and design patterns");
         round2.push("Practice writing clean code on whiteboard/paper");
     }
 
-    if (extractedSkills["Web"]) {
-        round3.push(`Review component lifecycle, state, and rendering in ${extractedSkills["Web"][0].toUpperCase()}`);
+    if (extractedSkills.web.length > 0) {
+        round3.push(`Review component lifecycle, state, and rendering in ${extractedSkills.web[0].toUpperCase()}`);
         round3.push("Practice creating responsive layouts and RESTful interactions");
+    } else if (!hasSkills) {
+        round3.push("Practice common front-end tasks likely in basic coding tests");
     } else {
         round3.push("Practice explaining technical concepts simply");
     }
 
-    if (extractedSkills["Data"]) {
-        round3.push(`Practice writing complex queries and schema design for ${extractedSkills["Data"][0].toUpperCase()}`);
+    if (extractedSkills.data.length > 0) {
+        round3.push(`Practice writing complex queries and schema design for ${extractedSkills.data[0].toUpperCase()}`);
         round2.push("Review Normalization and ACID properties");
     }
 
-    if (extractedSkills["Cloud/DevOps"]) {
-        round3.push(`Review deployment, scaling, and CI/CD pipelines using ${extractedSkills["Cloud/DevOps"][0].toUpperCase()}`);
+    if (extractedSkills.cloud.length > 0) {
+        round3.push(`Review deployment, scaling, and CI/CD pipelines using ${extractedSkills.cloud[0].toUpperCase()}`);
     }
 
-    if (extractedSkills["Core CS"]) {
+    if (extractedSkills.coreCS.length > 0) {
         round2.push("Revise edge-case handling in data structure manipulations");
     }
 
-    // Ensure lengths are between 5-8
-    const padRound = (arr, max) => {
+    const padRound = (arr) => {
         while (arr.length < 5) arr.push("Review generic system design concepts");
         if (arr.length > 8) arr.length = 8;
     };
     padRound(round1); padRound(round2); padRound(round3); padRound(round4);
 
     const checklist = [
-        { round: "Round 1: Aptitude / Basics", items: round1 },
-        { round: "Round 2: DSA + Core CS", items: round2 },
-        { round: "Round 3: Tech interview (projects + stack)", items: round3 },
-        { round: "Round 4: Managerial / HR", items: round4 }
+        { roundTitle: "Round 1: Aptitude / Basics", items: round1 },
+        { roundTitle: "Round 2: DSA + Core CS", items: round2 },
+        { roundTitle: "Round 3: Tech interview (projects + stack)", items: round3 },
+        { roundTitle: "Round 4: Managerial / HR", items: round4 }
     ];
 
-    let day5Focus = "Project + resume alignment";
-    if (extractedSkills["Web"]) {
-        day5Focus = `Project + alignment (Focus: Frontend/Backend Web Stack)`;
-    } else if (extractedSkills["Cloud/DevOps"]) {
-        day5Focus = `Project + alignment (Focus: Cloud infrastructure)`;
-    } else if (extractedSkills["Data"]) {
-        day5Focus = `Project + alignment (Focus: Database schema & queries)`;
+    let day5Tasks = ["Project + resume alignment"];
+    if (extractedSkills.web.length > 0) {
+        day5Tasks = [`Project + alignment (Focus: Frontend/Backend Web Stack)`];
+    } else if (extractedSkills.cloud.length > 0) {
+        day5Tasks = [`Project + alignment (Focus: Cloud infrastructure)`];
+    } else if (extractedSkills.data.length > 0) {
+        day5Tasks = [`Project + alignment (Focus: Database schema & queries)`];
     }
 
-    const plan = [
-        { day: "Day 1–2", task: "Basics + core CS revision" },
-        { day: "Day 3–4", task: "DSA + coding practice" },
-        { day: "Day 5", task: day5Focus },
-        { day: "Day 6", task: "Mock interview questions" },
-        { day: "Day 7", task: "Revision + weak areas" }
+    const plan7Days = [
+        { day: "Day 1–2", focus: "Basics + core CS revision", tasks: ["Revise CS fundamentals", "Quick syntax recap"] },
+        { day: "Day 3–4", focus: "DSA + coding practice", tasks: ["Solve top 50 LeetCode patterns", "Time complexity drills"] },
+        { day: "Day 5", focus: "Project + stack deep dive", tasks: day5Tasks },
+        { day: "Day 6", focus: "Mock interview questions", tasks: ["Prepare 10 skill-based questions", "Behavioral prep"] },
+        { day: "Day 7", focus: "Revision + weak areas", tasks: ["Final review of JD requirements", "Mental walkthrough"] }
     ];
 
-    // Exactly 10 questions based on skills
     const questions = [];
     allDetected.forEach(skill => {
         if (Q_BANK[skill.toLowerCase()] && questions.length < 10 && !questions.includes(Q_BANK[skill.toLowerCase()])) {
@@ -177,9 +193,8 @@ export function analyzeJD(company, role, jdText) {
         }
     });
 
-    // fallback to generic categories
-    if (extractedSkills["Web"] && questions.length < 10) questions.push("How do you ensure security in a web application?");
-    if (extractedSkills["Testing"] && questions.length < 10) questions.push(Q_BANK["testing"]);
+    if (extractedSkills.web.length > 0 && questions.length < 10) questions.push("How do you ensure security in a web application?");
+    if (extractedSkills.testing.length > 0 && questions.length < 10) questions.push(Q_BANK["testing"]);
 
     let i = 0;
     while (questions.length < 10 && i < GENERIC_QUESTIONS.length) {
@@ -189,58 +204,38 @@ export function analyzeJD(company, role, jdText) {
         i++;
     }
 
-    // --- Company Intel & Round Mapping ---
     const enterprises = ["google", "amazon", "microsoft", "meta", "apple", "netflix", "tcs", "infosys", "wipro", "accenture", "cognizant", "ibm", "oracle", "salesforce", "adobe", "samsung", "walmart"];
     const lowerCompany = (company || "").toLowerCase();
-
-    let companySize = "Startup (<200)";
-    let hiringFocus = "Practical problem solving + stack depth";
-    let isEnterprise = false;
-
-    if (enterprises.some(e => lowerCompany.includes(e))) {
-        companySize = "Enterprise (2000+)";
-        hiringFocus = "Structured DSA + core fundamentals";
-        isEnterprise = true;
-    } else if (jdText && jdText.length > 1500) {
-        companySize = "Mid-size (200–2000)";
-        hiringFocus = "Balance of fundamentals and specializations";
-    }
-
-    const industry = (jdText || "").toLowerCase().includes("bank") || (jdText || "").toLowerCase().includes("fin")
-        ? "Finance / Fintech"
-        : "Technology Services";
+    let isEnterprise = enterprises.some(e => lowerCompany.includes(e));
 
     const roundMapping = [];
     if (isEnterprise) {
-        roundMapping.push({ round: "Round 1: Online Assessment", topic: "DSA + Aptitude", why: "Used to filter thousands of applications at scale." });
-        roundMapping.push({ round: "Round 2: Technical Interview I", topic: "DSA + Algorithms", why: "Tests your ability to solve complex problems with code." });
-        roundMapping.push({ round: "Round 3: Technical Interview II", topic: "Core CS + Projects", why: "Ensures solid theoretical foundation in OS, DBMS, etc." });
-        roundMapping.push({ round: "Round 4: Managerial / HR", topic: "Culture & Behavioral", why: "Evaluates teamwork, ethics, and long-term stability." });
+        roundMapping.push({ roundTitle: "Round 1: Online Assessment", focusAreas: ["DSA", "Aptitude"], whyItMatters: "Used to filter thousands of applications at scale." });
+        roundMapping.push({ roundTitle: "Round 2: Technical Interview I", focusAreas: ["DSA", "Algorithms"], whyItMatters: "Tests your ability to solve complex problems with code." });
+        roundMapping.push({ roundTitle: "Round 3: Technical Interview II", focusAreas: ["Core CS", "Projects"], whyItMatters: "Ensures solid theoretical foundation in OS, DBMS, etc." });
+        roundMapping.push({ roundTitle: "Round 4: Managerial / HR", focusAreas: ["Culture", "Behavioral"], whyItMatters: "Evaluates teamwork, ethics, and long-term stability." });
     } else {
-        roundMapping.push({ round: "Round 1: Practical Screen", topic: "Machine Coding / Task", why: "Verification that you can build features immediately." });
-        roundMapping.push({ round: "Round 2: Technical Discussion", topic: "Stack Depth + System", why: "Deep dive into your architectural understanding." });
-        roundMapping.push({ round: "Round 3: Culture Fit", topic: "Founder / Team Round", why: "Small teams need perfect interpersonal alignment." });
+        roundMapping.push({ roundTitle: "Round 1: Practical Screen", focusAreas: ["Machine Coding", "Task"], whyItMatters: "Verification that you can build features immediately." });
+        roundMapping.push({ roundTitle: "Round 2: Technical Discussion", focusAreas: ["Stack Depth", "System Design"], whyItMatters: "Deep dive into your architectural understanding." });
+        roundMapping.push({ roundTitle: "Round 3: Culture Fit", focusAreas: ["Founder Round", "Teamwork"], whyItMatters: "Small teams need perfect interpersonal alignment." });
     }
 
+    const now = new Date().toISOString();
     return {
         id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-        company: company || "Unknown Company",
-        role: role || "Unknown Role",
+        createdAt: now,
+        updatedAt: now,
+        company: company || "",
+        role: role || "",
         jdText,
         extractedSkills,
-        skillConfidenceMap: {},
-        companyIntel: {
-            size: companySize,
-            industry,
-            focus: hiringFocus,
-        },
         roundMapping,
-        plan,
         checklist,
+        plan7Days,
         questions,
-        readinessScore,
-        originalReadinessScore: readinessScore
+        baseScore,
+        skillConfidenceMap: {},
+        finalScore: baseScore
     };
 }
 
@@ -260,10 +255,28 @@ export function updateHistoryEntry(updatedEntry) {
 }
 
 export function getHistory() {
-    return JSON.parse(localStorage.getItem("jd_history") || "[]");
+    try {
+        const raw = localStorage.getItem("jd_history");
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+
+        // Filter out corrupted entries (e.g. missing id)
+        const validEntries = parsed.filter(entry => entry && entry.id);
+
+        if (validEntries.length < parsed.length) {
+            console.warn("Some corrupted history entries were skipped.");
+            // We'll let the UI handle the specific message if needed, 
+            // but we ensure the app doesn't crash.
+        }
+        return validEntries;
+    } catch (e) {
+        console.error("Failed to parse history:", e);
+        return [];
+    }
 }
 
 export function getHistoryEntry(id) {
-    const existing = JSON.parse(localStorage.getItem("jd_history") || "[]");
-    return existing.find(e => e.id === id);
+    const history = getHistory();
+    return history.find(e => e.id === id);
 }
